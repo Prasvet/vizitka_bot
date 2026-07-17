@@ -2,43 +2,58 @@ import asyncio
 import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.enums import ParseMode
-from aiogram.client.default import DefaultBotProperties
 from dotenv import load_dotenv
 
-# 1. Загружаем токен из .env
+# 1. Загрузка настроек
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 
-# Проверка, чтобы не ломать голову, если токена нет
+# Проверка токена
 if not TOKEN:
     print("❌ Ошибка: Токен не найден в файле .env")
     exit()
 
-# 2. Настройка бота
-# Мы включаем HTML-разметку по умолчанию, чтобы можно было писать жирным и курсивом
-bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
+# --- ХЭНДЛЕРЫ (ОБРАБОТЧИКИ) ---
 
-# 3. Обработчик команды /start
+
+# 2. Команда /start (Самая важная, ставим первой)
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     await message.answer(
-        "👋 Привет!\nЯ твой первый бот. Напиши мне что-нибудь, и я повторю."
+        "👋 Привет!\n\n"
+        "Я бот-визитка. Пока я умею немного, но я быстро учусь.\n"
+        "Нажми /help, чтобы узнать подробности."
     )
 
 
-# 4. Обработчик любого текста (Эхо)
+# 3. Команда /help
+@dp.message(Command("help"))
+async def cmd_help(message: types.Message):
+    await message.answer(
+        "🤖 Справка:\n\n"
+        "/start - Начать работу заново\n"
+        "/help - Показать это сообщение\n\n"
+        "Просто отправь мне любой текст, и я отвечу."
+    )
+
+
+# 4. "Ловушка" для всех остальных сообщений
+# (Ставим В САМОМ НИЗУ. Если поставить выше, команды сломаются!)
 @dp.message()
 async def echo_handler(message: types.Message):
-    # Бот просто отправляет обратно тот же текст
-    await message.answer(message.text)
+    # Проверяем, что пользователь прислал именно текст, а не стикер/фото
+    if message.text:
+        await message.answer(f"Ты написал: {message.text}")
+    else:
+        await message.answer("Я понимаю только текст, извини 🤷‍♂️")
 
 
-# 5. Функция запуска
+# --- ЗАПУСК ---
 async def main():
-    print("🚀 Бот запущен! Нажмите Ctrl+C, чтобы остановить.")
+    print("🚀 Бот запущен! (Нажми Ctrl+C для остановки)")
     await dp.start_polling(bot)
 
 
@@ -46,4 +61,4 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("Бот остановлен")
+        print("Бот выключен")
