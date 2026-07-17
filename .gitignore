@@ -78,3 +78,5 @@ migrations/versions/*.pyc
 # Артефакты сборки/деплоя, если появятся
 deploy.sh.bak
 *.service
+
+samples
