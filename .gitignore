@@ -1,0 +1,80 @@
+# --- Python generated files & caches ---
+__pycache__/
+*.py[co]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# --- Virtual environments & uv ---
+.venv/
+uv.venv/
+.uv/
+
+# --- Secrets & sensitive data ---
+.env
+*.key
+*.pem
+*.crt
+secrets.json
+
+# --- IDE & editors ---
+# PyCharm / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code
+.vscode/
+.vscode/*.code-workspace
+
+# --- OS metadata ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# --- Logs & temp ---
+logs/
+*.log
+tmp/
+temp/
+.tmp/
+
+# --- Testing & coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# --- Git ---
+.git/
+
+# --- Project-specific (под твой стиль) ---
+# Если будешь хранить дампы БД или миграции вне Git
+*.sql
+*.dump
+migrations/versions/*.pyc
+
+# Артефакты сборки/деплоя, если появятся
+deploy.sh.bak
+*.service
