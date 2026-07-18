@@ -3,6 +3,8 @@ import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from dotenv import load_dotenv
+from aiogram.enums import ParseMode
+from aiogram.client.default import DefaultBotProperties
 
 # 1. Загрузка настроек
 load_dotenv()
@@ -13,7 +15,7 @@ if not TOKEN:
     print("❌ Ошибка: Токен не найден в файле .env")
     exit()
 
-bot = Bot(token=TOKEN)
+bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
 
 # --- ХЭНДЛЕРЫ (ОБРАБОТЧИКИ) ---
@@ -38,6 +40,19 @@ async def cmd_help(message: types.Message):
         "/help - Показать это сообщение\n\n"
         "Просто отправь мне любой текст, и я отвечу."
     )
+
+
+@dp.message(Command("about"))
+async def cmd_about(message: types.Message):
+    content = (
+        "👤 <b>Обо мне</b>\n\n"
+        "Я тестовый бот-визитка.\n"
+        "Меня создал ученик курса Python.\n\n"
+        "<b>Мои контакты:</b>\n"
+        "🔥 <a href='https://stepik.org/users/1135389522/profile'>Мой профиль Stepik</a>\n"
+        "<i>Напиши мне что-нибудь, и я отвечу эхом!</i>"
+    )
+    await message.answer(content)
 
 
 # 4. "Ловушка" для всех остальных сообщений
