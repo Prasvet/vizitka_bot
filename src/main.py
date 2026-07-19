@@ -28,14 +28,34 @@ async def cmd_start(message: types.Message):
     )
 
 
-# Этот хэндлер ругается, если прислали ФАЙЛ, а не картинку
-@dp.message(F.document)
-async def warning_doc(message: types.Message):
+@dp.message(Command("help"))
+async def cmd_help(message: types.Message):
     await message.answer(
-        "⚠️ Ты прислал это как файл.\n"
-        "Telegram не показывает превью для файлов.\n"
-        "Пожалуйста, пришли именно как Фото (сжатое)."
+        "🤖 Справка:\n\n"
+        "/start - Начать работу заново\n"
+        "/help - Показать это сообщение\n\n"
+        "Просто отправь мне любой текст, и я отвечу."
     )
+
+
+@dp.message(Command("photo"))
+async def cmd_photo(message: types.Message):
+    if PHOTO_ID == "":
+        await message.answer("Сначала отпрафь фото!")
+        return
+
+    # Отправляем фото по его ID (мгновенно)
+    await message.answer_photo(photo=PHOTO_ID, caption="Вот твое фото! 🚀")
+
+
+@dp.message(F.photo)
+async def get_photo_id(message: types.Message):
+    global PHOTO_ID
+    # Берем последнее фото (оно самого высокого качества)
+    photo_data = message.photo[-1]
+    PHOTO_ID = photo_data.file_id
+
+    await message.answer(f"✅ Фото получено!\n\n")
 
 
 @dp.message(Command("about"))
@@ -49,6 +69,19 @@ async def cmd_about(message: types.Message):
         "<i>Напиши мне что-нибудь, и я отвечу эхом!</i>"
     )
     await message.answer(content)
+
+
+# --- ОБРАБОТКА МЕДИА ---
+
+
+# Этот хэндлер ругается, если прислали ФАЙЛ, а не картинку
+@dp.message(F.document)
+async def warning_doc(message: types.Message):
+    await message.answer(
+        "⚠️ Ты прислал это как файл.\n"
+        "Telegram не показывает превью для файлов.\n"
+        "Пожалуйста, пришли именно как Фото (сжатое)."
+    )
 
 
 # (Ставим В САМОМ НИЗУ. Если поставить выше, команды сломаются!)
