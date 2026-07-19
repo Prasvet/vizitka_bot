@@ -22,33 +22,9 @@ dp = Dispatcher()
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     await message.answer(
-        "👋 Привет!\nПришли мне любую картинку, и я скажу её код (file_id)."
-    )
-
-
-@dp.message(Command("photo"))
-async def cmd_photo(message: types.Message):
-    if PHOTO_ID == "":
-        await message.answer("Сначала настройте PHOTO_ID в коде!")
-        return
-
-    # Отправляем фото по его ID (мгновенно)
-    await message.answer_photo(photo=PHOTO_ID, caption="Вот твое фото! 🚀")
-
-
-# --- ОБРАБОТКА МЕДИА ---
-
-
-# Этот хэндлер ловит КАРТИНКИ
-@dp.message(F.photo)
-async def get_photo_id(message: types.Message):
-    global PHOTO_ID
-    # Берем последнее фото (оно самого высокого качества)
-    photo_data = message.photo[-1]
-    PHOTO_ID = photo_data.file_id
-
-    await message.answer(
-        f"✅ Фото получено! И сохранено в базу телеграмм\nкод: {PHOTO_ID}"
+        "👋 Привет!\n\n"
+        "Я бот-визитка. Пока я умею немного, но я быстро учусь.\n"
+        "Нажми /help, чтобы узнать подробности."
     )
 
 
