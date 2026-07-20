@@ -6,15 +6,22 @@ from dotenv import load_dotenv
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 
+
+# Импортируем типы для кнопок
+from aiogram.types import ReplyKeyboardRemove
+from src.keyboards import Btn, get_main_kb
+
+
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 
 # --- НАСТРОЙКИ ---
-# Сюда мы вставим ID картинки, когда получим его
+
 PHOTO_ID = ""
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
+
 
 # --- КОМАНДЫ ---
 
@@ -22,9 +29,8 @@ dp = Dispatcher()
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     await message.answer(
-        "👋 Привет!\n\n"
-        "Я бот-визитка. Пока я умею немного, но я быстро учусь.\n"
-        "Нажми /help, чтобы узнать подробности."
+        "👋 Привет!\n\nЯ добавил удобные кнопки внизу экрана. Пользуйся!",
+        reply_markup=get_main_kb(),
     )
 
 
@@ -32,16 +38,18 @@ async def cmd_start(message: types.Message):
 async def cmd_help(message: types.Message):
     await message.answer(
         "🤖 Справка:\n\n"
+        "Жми кнопки внизу. Если кнопок нет — напиши /start"
+        "Так же можно использовать команды"
         "/start - Начать работу заново\n"
-        "/help - Показать это сообщение\n\n"
-        "Просто отправь мне любой текст, и я отвечу."
+        "/help - Показать это сообщение\n\n",
+        reply_markup=get_main_kb(),
     )
 
 
 @dp.message(Command("photo"))
 async def cmd_photo(message: types.Message):
     if PHOTO_ID == "":
-        await message.answer("Сначала отпрафь фото!")
+        await message.answer("Сначала отправь фото!")
         return
 
     # Отправляем фото по его ID (мгновенно)
@@ -55,7 +63,7 @@ async def get_photo_id(message: types.Message):
     photo_data = message.photo[-1]
     PHOTO_ID = photo_data.file_id
 
-    await message.answer(f"✅ Фото получено!\n\n")
+    await message.answer("✅ Фото получено!\n\n")
 
 
 @dp.message(Command("about"))
@@ -69,6 +77,44 @@ async def cmd_about(message: types.Message):
         "<i>Напиши мне что-нибудь, и я отвечу эхом!</i>"
     )
     await message.answer(content)
+
+
+# --- ОБРАБОТКА КНОПОК (Текста) ---
+
+
+# Ловим текст, который написан на кнопке "Обо мне"
+@dp.message(F.text == Btn.ABOUT.value)
+async def btn_about(message: types.Message):
+    await message.answer(
+        "👤 Разработчик: Михаил Овсянников\n🚀 Курс: Python-разработчик\n🔗 Мой профиль",
+        reply_markup=get_main_kb(),
+    )
+
+
+@dp.message(F.text == Btn.PHOTO.value)
+async def btn_photo(message: types.Message):
+    if not PHOTO_ID:
+        await message.answer("Сначала настрой PHOTO_ID в коде!")
+        return
+
+    await message.answer_photo(
+        photo=PHOTO_ID, caption="Вот твое фото! 🖼", reply_markup=get_main_kb()
+    )
+
+
+@dp.message(F.text == Btn.HELP.value)
+async def btn_help(message: types.Message):
+    # Просто вызываем ту же функцию, что и для команды /help
+    await cmd_help(message)
+
+
+@dp.message(F.text == Btn.HIDE.value)
+async def btn_hide(message: types.Message):
+    await message.answer(
+        "Меню спрятано. Напиши /start, чтобы вернуть.",
+        # Специальный объект, который убирает кнопки
+        reply_markup=ReplyKeyboardRemove(),
+    )
 
 
 # --- ОБРАБОТКА МЕДИА ---
