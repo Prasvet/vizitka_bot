@@ -1,10 +1,7 @@
-обновление на сервере
+# обновление на сервере
 cd /home/projects/vizitka-bot
 git pull origin master
 uv sync
 systemctl restart vizitka-bot
-
-И сразу можно глянуть логи, если хочется убедиться, что всё гладко:
-
-bash
+# И сразу можно глянуть логи, если хочется убедиться, что всё гладко:
 journalctl -u vizitka-bot -n 20 --no-pager

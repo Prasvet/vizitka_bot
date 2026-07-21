@@ -118,6 +118,8 @@ async def btn_hide(message: types.Message):
 
 @dp.message(F.photo)
 async def get_photo_id(message: types.Message):
+    global PHOTO_ID
+    PHOTO_ID = message.photo[-1].file_id
     await message.answer(f"ID фото: <code>{message.photo[-1].file_id}</code>")
 
 
