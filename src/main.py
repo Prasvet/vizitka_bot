@@ -26,7 +26,9 @@ MY_CONTACTS = "Telegram: @Prasvet\nEmail: ovsyannikovm@ya.ru"
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 
-PHOTO_ID = "AgACAgIAAxkBAAOcal9tvxfBqbikQj_9WyoZTzhzPt8AAvAhaxuolfhKVYVbVe75cU8BAAMCAAN5AAM9BAAgACAgIAAxkBAAOcal9tvxfBqbikQj_9WyoZTzhzPt8AAvAhaxuolfhKVYVbVe75cU8BAAMCAAN5AAM9BA"
+PHOTO_ID = (
+    "AgACAgIAAxkBAAOcal9tvxfBqbikQj_9WyoZTzhzPt8AAvAhaxuolfhKVYVbVe75cU8BAAMCAAN5AAM9BA"
+)
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
@@ -118,6 +120,8 @@ async def btn_hide(message: types.Message):
 
 @dp.message(F.photo)
 async def get_photo_id(message: types.Message):
+    global PHOTO_ID
+    PHOTO_ID = message.photo[-1].file_id
     await message.answer(f"ID фото: <code>{message.photo[-1].file_id}</code>")
 
 
