@@ -26,7 +26,7 @@ MY_CONTACTS = "Telegram: @Prasvet\nEmail: ovsyannikovm@ya.ru"
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 
-PHOTO_ID = ""
+PHOTO_ID = "AgACAgIAAxkBAAOcal9tvxfBqbikQj_9WyoZTzhzPt8AAvAhaxuolfhKVYVbVe75cU8BAAMCAAN5AAM9BAAgACAgIAAxkBAAOcal9tvxfBqbikQj_9WyoZTzhzPt8AAvAhaxuolfhKVYVbVe75cU8BAAMCAAN5AAM9BA"
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
