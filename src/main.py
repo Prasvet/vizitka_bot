@@ -12,10 +12,19 @@ from aiogram.types import ReplyKeyboardRemove
 from keyboards import Btn, get_main_kb
 
 
+# --- 1. НАСТРОЙКИ ---
+MY_NAME = "Михаил Овсянников"
+MY_ROLE = "Ученик курса Python"
+MY_ABOUT = "Изучаю Go и Python, автоматизирую рутину."
+
+LINK_GITHUB = "https://github.com/Prasvet"
+LINK_CHANNEL = ""
+LINK_PORTFOLIO = ""
+
+MY_CONTACTS = "Telegram: @Prasvet\nEmail: ovsyannikovm@ya.ru"
+
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
-
-# --- НАСТРОЙКИ ---
 
 PHOTO_ID = ""
 
@@ -23,101 +32,100 @@ bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
 
 
-# --- КОМАНДЫ ---
+# --- КОМАНДЫ и Кнопки ---
 
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     await message.answer(
-        "👋 Привет!\n\nЯ добавил удобные кнопки внизу экрана. Пользуйся!",
+        f"👋 <strong>Привет!</strong>\n"
+        f"Я бот-визитка.\n"
+        f"Меня зовут {MY_NAME}. Чем могу помочь?",
         reply_markup=get_main_kb(),
     )
 
 
-@dp.message(Command("help"))
-async def cmd_help(message: types.Message):
-    await message.answer(
-        "🤖 Справка:\n\n"
-        "Жми кнопки внизу. Если кнопок нет — напиши /start"
-        "Так же можно использовать команды"
-        "/start - Начать работу заново\n"
-        "/help - Показать это сообщение\n\n",
-        reply_markup=get_main_kb(),
-    )
-
-
-@dp.message(Command("photo"))
-async def cmd_photo(message: types.Message):
-    if PHOTO_ID == "":
-        await message.answer("Сначала отправь фото!")
-        return
-
-    # Отправляем фото по его ID (мгновенно)
-    await message.answer_photo(photo=PHOTO_ID, caption="Вот твое фото! 🚀")
-
-
-@dp.message(F.photo)
-async def get_photo_id(message: types.Message):
-    global PHOTO_ID
-    # Берем последнее фото (оно самого высокого качества)
-    photo_data = message.photo[-1]
-    PHOTO_ID = photo_data.file_id
-
-    await message.answer("✅ Фото получено!\n\n")
-
-
-@dp.message(Command("about"))
-async def cmd_about(message: types.Message):
-    content = (
-        "👤 <b>Обо мне</b>\n\n"
-        "Я тестовый бот-визитка.\n"
-        "Меня создал ученик курса Python.\n\n"
-        "<b>Мои контакты:</b>\n"
-        "🔥 <a href='https://stepik.org/users/1135389522/profile'>Мой профиль Stepik</a>\n"
-        "<i>Напиши мне что-нибудь, и я отвечу эхом!</i>"
-    )
-    await message.answer(content)
-
-
-# --- ОБРАБОТКА КНОПОК (Текста) ---
-
-
-# Ловим текст, который написан на кнопке "Обо мне"
 @dp.message(F.text == Btn.ABOUT.value)
-async def btn_about(message: types.Message):
+@dp.message(Command("about"))
+async def show_about(message: types.Message):
     await message.answer(
-        "👤 Разработчик: Михаил Овсянников\n🚀 Курс: Python-разработчик\n🔗 Мой профиль",
+        f"👤 <strong>{MY_NAME}</strong>\n<em>{MY_ROLE}</em>\n\n{MY_ABOUT}",
         reply_markup=get_main_kb(),
     )
 
 
-@dp.message(F.text == Btn.PHOTO.value)
-async def btn_photo(message: types.Message):
-    if not PHOTO_ID:
-        await message.answer("Сначала настрой PHOTO_ID в коде!")
+@dp.message(F.text == Btn.PROJECTS.value)
+@dp.message(Command("projects"))
+async def show_projects(message: types.Message):
+    links = []
+    if LINK_GITHUB:
+        links.append(
+            f'• <a href="{LINK_GITHUB}" rel="noopener noreferrer nofollow">GitHub</a>'
+        )
+    if LINK_CHANNEL:
+        links.append(
+            f'• <a href="{LINK_CHANNEL}" rel="noopener noreferrer nofollow">Telegram-канал</a>'
+        )
+    if LINK_PORTFOLIO:
+        links.append(
+            f'• <a href="{LINK_PORTFOLIO}" rel="noopener noreferrer nofollow">Портфолио</a>'
+        )
+
+    if not links:
+        await message.answer(
+            "У меня пока нет опубликованных проектов.", reply_markup=get_main_kb()
+        )
         return
 
-    await message.answer_photo(
-        photo=PHOTO_ID, caption="Вот твое фото! 🖼", reply_markup=get_main_kb()
+    await message.answer(
+        "🧩 <strong>Мои проекты:</strong>\n\n" + "\n".join(links),
+        reply_markup=get_main_kb(),
     )
 
 
-@dp.message(F.text == Btn.HELP.value)
-async def btn_help(message: types.Message):
-    # Просто вызываем ту же функцию, что и для команды /help
-    await cmd_help(message)
+@dp.message(F.text == Btn.CONTACTS.value)
+@dp.message(Command("contacts"))
+async def show_contacts(message: types.Message):
+    await message.answer(
+        f"📞 <strong>Свяжитесь со мной:</strong>\n\n{MY_CONTACTS}",
+        reply_markup=get_main_kb(),
+    )
+
+
+@dp.message(F.text == "📷 Фото")
+@dp.message(Command("photo"))
+async def show_photo(message: types.Message):
+    if not PHOTO_ID:
+        await message.answer(
+            "Фото не настроено (вставьте ID в код).", reply_markup=get_main_kb()
+        )
+        return
+    await message.answer_photo(
+        photo=PHOTO_ID, caption=f"Это я, {MY_NAME}!", reply_markup=get_main_kb()
+    )
 
 
 @dp.message(F.text == Btn.HIDE.value)
 async def btn_hide(message: types.Message):
     await message.answer(
         "Меню спрятано. Напиши /start, чтобы вернуть.",
-        # Специальный объект, который убирает кнопки
         reply_markup=ReplyKeyboardRemove(),
     )
 
 
-# --- ОБРАБОТКА МЕДИА ---
+# --- ТЕХНИЧЕСКИЕ ХЭНДЛЕРЫ ---
+
+
+@dp.message(F.photo)
+async def get_photo_id(message: types.Message):
+    await message.answer(f"ID фото: <code>{message.photo[-1].file_id}</code>")
+
+
+@dp.message()
+async def echo(message: types.Message):
+    await message.answer(
+        "Я не понимаю. Используй кнопки 👇", reply_markup=get_main_kb()
+    )
 
 
 # Этот хэндлер ругается, если прислали ФАЙЛ, а не картинку
@@ -128,16 +136,6 @@ async def warning_doc(message: types.Message):
         "Telegram не показывает превью для файлов.\n"
         "Пожалуйста, пришли именно как Фото (сжатое)."
     )
-
-
-# (Ставим В САМОМ НИЗУ. Если поставить выше, команды сломаются!)
-@dp.message()
-async def echo_handler(message: types.Message):
-    # Проверяем, что пользователь прислал именно текст, а не стикер/фото
-    if message.text:
-        await message.answer(f"Ты написал: {message.text}")
-    else:
-        await message.answer("Я понимаю только текст, извини 🤷‍♂️")
 
 
 # --- ЗАПУСК ---
