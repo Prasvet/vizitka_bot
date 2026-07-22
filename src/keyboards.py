@@ -1,4 +1,3 @@
-# Импортируем типы для кнопок
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from enum import Enum
 
@@ -12,6 +11,7 @@ class Btn(Enum):
     PHOTO = "📷 Фото"
     HELP = "❓ Помощь"
     HIDE = "❌ Спрятать меню"
+    MENU = "🏠 Меню"
 
     @classmethod
     def values_list(cls):
@@ -25,7 +25,7 @@ class Btn(Enum):
 
 
 # Мы создаем функцию, чтобы удобно вызывать меню в любом месте
-def get_main_kb() -> ReplyKeyboardMarkup:
+def get_main_menu() -> ReplyKeyboardMarkup:
     kb = [
         [KeyboardButton(text=Btn.ABOUT.value), KeyboardButton(text=Btn.PROJECTS.value)],
         [KeyboardButton(text=Btn.CONTACTS.value), KeyboardButton(text=Btn.PHOTO.value)],
@@ -35,4 +35,10 @@ def get_main_kb() -> ReplyKeyboardMarkup:
         keyboard=kb,
         resize_keyboard=True,
         input_field_placeholder="Выберите пункт меню...",
+    )
+
+
+def nav_menu() -> ReplyKeyboardMarkup:
+    return ReplyKeyboardMarkup(
+        keyboard=[[KeyboardButton(text=Btn.MENU.value)]], resize_keyboard=True
     )

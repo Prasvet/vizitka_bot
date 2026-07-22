@@ -9,89 +9,48 @@ from aiogram.client.default import DefaultBotProperties
 
 # Импортируем типы для кнопок
 from aiogram.types import ReplyKeyboardRemove
-from keyboards import Btn, get_main_kb
+from keyboards import Btn, get_main_menu, nav_menu
+
+import texts
+from my_data import PHOTO_ID, NAME
 
 
 # --- 1. НАСТРОЙКИ ---
-MY_NAME = "Михаил Овсянников"
-MY_ROLE = "Ученик курса Python"
-MY_ABOUT = "Изучаю Go и Python, автоматизирую рутину."
-
-LINK_GITHUB = "https://github.com/Prasvet"
-LINK_CHANNEL = ""
-LINK_PORTFOLIO = ""
-
-MY_CONTACTS = "Telegram: @Prasvet\nEmail: ovsyannikovm@ya.ru"
 
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
-
-PHOTO_ID = (
-    "AgACAgIAAxkBAAOcal9tvxfBqbikQj_9WyoZTzhzPt8AAvAhaxuolfhKVYVbVe75cU8BAAMCAAN5AAM9BA"
-)
+if not TOKEN:
+    raise ValueError("BOT_TOKEN не найден! Проверьте файл .env")
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
 
 
-# --- КОМАНДЫ и Кнопки ---
+# --- ХЭНДЛЕРЫ ---
 
 
+@dp.message(F.text == Btn.MENU.value)
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    await message.answer(
-        f"👋 <strong>Привет!</strong>\n"
-        f"Я бот-визитка.\n"
-        f"Меня зовут {MY_NAME}. Чем могу помочь?",
-        reply_markup=get_main_kb(),
-    )
+    await message.answer(texts.get_home(), reply_markup=get_main_menu())
 
 
 @dp.message(F.text == Btn.ABOUT.value)
 @dp.message(Command("about"))
 async def show_about(message: types.Message):
-    await message.answer(
-        f"👤 <strong>{MY_NAME}</strong>\n<em>{MY_ROLE}</em>\n\n{MY_ABOUT}",
-        reply_markup=get_main_kb(),
-    )
+    await message.answer(texts.get_about(), reply_markup=get_main_menu())
 
 
 @dp.message(F.text == Btn.PROJECTS.value)
 @dp.message(Command("projects"))
 async def show_projects(message: types.Message):
-    links = []
-    if LINK_GITHUB:
-        links.append(
-            f'• <a href="{LINK_GITHUB}" rel="noopener noreferrer nofollow">GitHub</a>'
-        )
-    if LINK_CHANNEL:
-        links.append(
-            f'• <a href="{LINK_CHANNEL}" rel="noopener noreferrer nofollow">Telegram-канал</a>'
-        )
-    if LINK_PORTFOLIO:
-        links.append(
-            f'• <a href="{LINK_PORTFOLIO}" rel="noopener noreferrer nofollow">Портфолио</a>'
-        )
-
-    if not links:
-        await message.answer(
-            "У меня пока нет опубликованных проектов.", reply_markup=get_main_kb()
-        )
-        return
-
-    await message.answer(
-        "🧩 <strong>Мои проекты:</strong>\n\n" + "\n".join(links),
-        reply_markup=get_main_kb(),
-    )
+    await message.answer(texts.get_projects(), reply_markup=get_main_menu())
 
 
 @dp.message(F.text == Btn.CONTACTS.value)
 @dp.message(Command("contacts"))
 async def show_contacts(message: types.Message):
-    await message.answer(
-        f"📞 <strong>Свяжитесь со мной:</strong>\n\n{MY_CONTACTS}",
-        reply_markup=get_main_kb(),
-    )
+    await message.answer(texts.get_contacts(), reply_markup=get_main_menu())
 
 
 @dp.message(F.text == "📷 Фото")
@@ -99,11 +58,12 @@ async def show_contacts(message: types.Message):
 async def show_photo(message: types.Message):
     if not PHOTO_ID:
         await message.answer(
-            "Фото не настроено (вставьте ID в код).", reply_markup=get_main_kb()
+            "Фото не настроено (вставьте ID в код).",
+            reply_markup=get_main_menu(),
         )
         return
     await message.answer_photo(
-        photo=PHOTO_ID, caption=f"Это я, {MY_NAME}!", reply_markup=get_main_kb()
+        photo=PHOTO_ID, caption=f"Это я, {NAME}!", reply_markup=get_main_menu()
     )
 
 
@@ -124,10 +84,12 @@ async def get_photo_id(message: types.Message):
 
 
 @dp.message()
-async def echo(message: types.Message):
-    await message.answer(
-        "Я не понимаю. Используй кнопки 👇", reply_markup=get_main_kb()
+async def fallback_handler(message: types.Message):
+    content = "\n".join(
+        "Я пока не понимаю такие сообщения 🙂",
+        "Пожалуйста, используйте кнопки меню.",
     )
+    await message.answer(content, reply_markup=nav_menu())
 
 
 # Этот хэндлер ругается, если прислали ФАЙЛ, а не картинку
