@@ -8,14 +8,13 @@ from aiogram.client.default import DefaultBotProperties
 
 
 # Импортируем типы для кнопок
-from aiogram.types import ReplyKeyboardRemove
 from keyboards import Btn, get_main_menu, nav_menu
 
 import texts
 from my_data import PHOTO_ID, NAME
 
 
-# --- 1. НАСТРОЙКИ ---
+# --- НАСТРОЙКИ ---
 
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")

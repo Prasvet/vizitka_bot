@@ -2,8 +2,8 @@
 
 
 NAME = "Михаил Овсянников"
-ROLE = "Ученик курса Python"
-SHORT_DESC = "Изучаю Go и Python, автоматизирую рутину."
+ROLE = "Разработчик Python"
+SHORT_DESC = "Изучаю Go, Python, SQL, автоматизирую рутину."
 
 LINK_GITHUB = "https://github.com/Prasvet"
 LINK_TG_CHANNEL = ""
