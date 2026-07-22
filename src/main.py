@@ -38,19 +38,19 @@ async def cmd_start(message: types.Message):
 @dp.message(F.text == Btn.ABOUT.value)
 @dp.message(Command("about"))
 async def show_about(message: types.Message):
-    await message.answer(texts.get_about(), reply_markup=get_main_menu())
+    await message.answer(texts.get_about(), reply_markup=nav_menu())
 
 
 @dp.message(F.text == Btn.PROJECTS.value)
 @dp.message(Command("projects"))
 async def show_projects(message: types.Message):
-    await message.answer(texts.get_projects(), reply_markup=get_main_menu())
+    await message.answer(texts.get_projects(), reply_markup=nav_menu())
 
 
 @dp.message(F.text == Btn.CONTACTS.value)
 @dp.message(Command("contacts"))
 async def show_contacts(message: types.Message):
-    await message.answer(texts.get_contacts(), reply_markup=get_main_menu())
+    await message.answer(texts.get_contacts(), reply_markup=nav_menu())
 
 
 @dp.message(F.text == "📷 Фото")
@@ -59,11 +59,11 @@ async def show_photo(message: types.Message):
     if not PHOTO_ID:
         await message.answer(
             "Фото не настроено (вставьте ID в код).",
-            reply_markup=get_main_menu(),
+            reply_markup=nav_menu(),
         )
         return
     await message.answer_photo(
-        photo=PHOTO_ID, caption=f"Это я, {NAME}!", reply_markup=get_main_menu()
+        photo=PHOTO_ID, caption=f"Это я, {NAME}!", reply_markup=nav_menu()
     )
 
 
@@ -71,7 +71,7 @@ async def show_photo(message: types.Message):
 async def btn_hide(message: types.Message):
     await message.answer(
         "Меню спрятано. Напиши /start, чтобы вернуть.",
-        reply_markup=ReplyKeyboardRemove(),
+        reply_markup=nav_menu(),
     )
 
 
