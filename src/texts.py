@@ -1,5 +1,4 @@
-from my_data import NAME, ROLE, LINK_GITHUB, LINK_PORTFOLIO, LINK_TG_CHANNEL
-from my_data import SHORT_DESC, CONTACT_EMAIL, CONTACT_TG
+from my_data import NAME, ROLE, SHORT_DESC, CONTACT_EMAIL, CONTACT_TG, LINKS, PROJECTS
 
 
 def get_home() -> str:
@@ -16,19 +15,11 @@ def get_about() -> str:
         f"<em>{ROLE}</em>\n",
         f"{SHORT_DESC}\n",
         "🔗 <strong>Где меня найти:</strong>",
-        # ВАЖНО: f-строки с одинарными внешними кавычками
-        f'• <a href="{LINK_GITHUB}" rel="noopener noreferrer nofollow">GitHub</a>',
     ]
-    if LINK_TG_CHANNEL:
+    for name, link in LINKS.items():
         parts.append(
-            f'• <a href="{LINK_TG_CHANNEL}" rel="noopener noreferrer nofollow">Telegram-канал</a>'
+            f'• <a href="{link}" rel="noopener noreferrer nofollow">{name}</a>'
         )
-
-    if LINK_PORTFOLIO:
-        parts.append(
-            f'• <a href="{LINK_PORTFOLIO}" rel="noopener noreferrer nofollow">Портфолио</a>'
-        )
-
     return "\n".join(parts) + get_footer()
 
 
@@ -36,11 +27,10 @@ def get_projects() -> str:
     parts = [
         "🧩 <strong>Мои проекты</strong>\n\n",
         "Посмотрите примеры кода и кейсы:\n",
-        f'👉 <a href="{LINK_GITHUB}" rel="noopener noreferrer nofollow">Мой GitHub</a>\n',
     ]
-    if LINK_PORTFOLIO:
+    for name, link in PROJECTS.items():
         parts.append(
-            f'• <a href="{LINK_PORTFOLIO}" rel="noopener noreferrer nofollow">Портфолио</a>'
+            f'• <a href="{link}" rel="noopener noreferrer nofollow">{name}</a>'
         )
 
     return "\n".join(parts) + get_footer()
