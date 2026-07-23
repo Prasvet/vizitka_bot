@@ -17,9 +17,9 @@ from my_data import PHOTO_ID, NAME
 # --- НАСТРОЙКИ ---
 
 load_dotenv()
-TOKEN = os.getenv("BOT_TOKEN")
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if not TOKEN:
-    raise ValueError("BOT_TOKEN не найден! Проверьте файл .env")
+    raise ValueError("TELEGRAM_BOT_TOKEN не найден! Проверьте файл .env")
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
