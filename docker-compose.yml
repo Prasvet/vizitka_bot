@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  bot:
+    build: .
+    container_name: vizitka_bot
+    restart: unless-stopped
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      # - PHOTO_ID=${PHOTO_ID}  # если используешь
+    env_file:
+      - .env
