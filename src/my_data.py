@@ -14,6 +14,7 @@ PROJECTS = {
 # Если хочешь хранить и другие ссылки рядом:
 LINKS = {
     "Я на GitHub": "https://github.com/Prasvet",
+    "Я на stepik.org": "https://stepik.org/users/1135389522/profile",
     "tg_channel": "",  # пока пусто
     "portfolio": "",  # пока пусто
 }
