@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
@@ -13,6 +14,11 @@ from keyboards import Btn, get_main_menu, nav_menu
 import texts
 from my_data import PHOTO_ID, NAME
 
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s"
+)
+logger = logging.getLogger(__name__)
+
 
 # --- НАСТРОЙКИ ---
 
@@ -20,6 +26,8 @@ load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if not TOKEN:
     raise ValueError("TELEGRAM_BOT_TOKEN не найден! Проверьте файл .env")
+else:
+    logger.info("✅ Токен успешно загружен")
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
@@ -31,6 +39,7 @@ dp = Dispatcher()
 @dp.message(F.text == Btn.MENU.value)
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
+    logger.info(f"📩 Получен /start от пользователя {message.from_user.id}")
     await message.answer(texts.get_home(), reply_markup=get_main_menu())
 
 
@@ -103,8 +112,10 @@ async def warning_doc(message: types.Message):
 
 # --- ЗАПУСК ---
 async def main():
+    logger.info("🚀 Запуск бота Vizitka...")
     print("🚀 Бот запущен! (Нажми Ctrl+C для остановки)")
     await dp.start_polling(bot)
+    logger.info("🛑 Бот остановлен")
 
 
 if __name__ == "__main__":
