@@ -1,18 +1,26 @@
 FROM python:3.12-slim
 
-# Устанавливаем uv (он нужен для установки зависимостей внутри образа)
-RUN pip install --no-cache-dir uv
-
 WORKDIR /app
 
-# Копируем только файлы описания проекта сначала (чтобы кэш слоёв работал быстрее)
+# Установка curl для uv и базовых утилит
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Установка uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:${PATH}"
+
+# Копируем только манифесты для предварительного кэширования зависимостей
 COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
 
-# Синхронизируем зависимости (uv возьмёт версии строго из uv.lock)
-RUN uv sync --frozen
-
-# Теперь копируем весь остальной код
+# Копируем остальной код
 COPY . .
 
-# Команда запуска: uv sync уже был, теперь просто стартуем бота
+# Создаём папку для данных, если вдруг volume не сработает сразу
+RUN mkdir -p /app/data
+
+# Запуск
 CMD ["uv", "run", "python", "src/main.py"]
