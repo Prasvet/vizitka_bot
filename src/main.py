@@ -1,18 +1,18 @@
 import asyncio
 import logging
 import os
-from aiogram import Bot, Dispatcher, types, F
+
+from aiogram import Bot, Dispatcher, F, types
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from dotenv import load_dotenv
-from aiogram.enums import ParseMode
-from aiogram.client.default import DefaultBotProperties
 
+import texts
 
 # Импортируем типы для кнопок
 from keyboards import Btn, get_main_menu, nav_menu
-
-import texts
-from my_data import PHOTO_ID, NAME
+from my_data import NAME, PHOTO_ID
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s"

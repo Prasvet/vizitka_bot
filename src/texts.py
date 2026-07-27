@@ -1,4 +1,4 @@
-from my_data import NAME, ROLE, SHORT_DESC, CONTACT_EMAIL, CONTACT_TG, LINKS, PROJECTS
+from my_data import CONTACT_EMAIL, CONTACT_TG, LINKS, NAME, PROJECTS, ROLE, SHORT_DESC
 
 
 def get_home() -> str:
